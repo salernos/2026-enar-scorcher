@@ -1,0 +1,475 @@
+---
+title: "scorcher: Deep Learning Pipelines for Reproducible Statistical Research"
+subtitle: "ENAR Spring Meeting"
+author: "Stephen Salerno"
+institute: "Fred Hutchinson Cancer Center"
+date: 2026-03-16
+
+format:
+  revealjs:
+    theme: default
+    slide-number: true
+    transition: slide
+    background-transition: fade
+    incremental: false
+    center: true
+    width: 1280
+    height: 720
+    margin: 0.06
+    code-fold: false
+
+execute:
+  echo: true
+---
+
+---
+
+## Motivation
+
+In biomedical research we increasingly want to build **predictive models from complex data**.
+
+::: {.fragment}
+Two motivating projects:
+:::
+
+::: {.columns}
+::: {.column width="50%"}
+
+### Pulmonary embolism risk prediction
+
+**Awan + Barbara Lam**
+
+::: {.fragment} 
+Multimodal patient features
+:::
+
+::: {.fragment} 
+Output: a **risk score** for PE
+:::
+
+:::
+
+::: {.column width="50%"}
+
+### Automated karyotyping
+
+::: {.fragment} 
+Metaphase images → abnormalities
+:::
+
+::: {.fragment} 
+Models analyze **100+ cells/patient**
+:::
+
+:::
+:::
+
+::: {.fragment}
+
+Both require: flexible architectures · multimodal inputs · reproducible training
+
+:::
+
+---
+
+## Slide 3
+
+## The workflow problem
+
+Deep learning tools are powerful, but research workflows can become fragile.
+
+* {.fragment} Python scripts for training
+* {.fragment} Separate preprocessing pipelines
+* {.fragment} Export results back into R for analysis
+
+::: {.fragment}
+This often leads to:
+
+* brittle pipelines
+* poor reproducibility
+* models disconnected from downstream statistical workflows
+
+:::
+
+---
+
+## Slide 4
+
+## Why scorcher?
+
+**Goal:** a research-friendly deep learning framework in R that is:
+
+::: {.fragment} 
+**native R `torch`**
+:::
+
+::: {.fragment}  
+**modular** model components
+:::
+
+::: {.fragment} 
+**reproducible** end-to-end workflows
+:::
+
+::: {.fragment}  
+designed for **statistical research settings**
+:::
+
+---
+
+## Slide 5
+
+## Design inspiration
+
+We drew a lot of inspiration from:
+
+::: {.fragment}  
+the **Keras Functional API**
+:::
+
+::: {.fragment} 
+the **keras3 R package**
+:::
+
+::: {.fragment}
+But we wanted:
+
+* a high-level API for **native R `torch`**
+* a workflow that fits naturally into **R analysis pipelines**
+
+:::
+
+---
+
+## Slide 6
+
+## Tidy, pipe-based model construction
+
+Models are built using **tidy, pipable functions**.
+
+::: {.fragment}
+This keeps the architecture explicit and readable:
+:::
+
+```r
+model <- initiate_scorch() |>
+  scorch_embedding("clinical_features", dim = 64) |>
+  scorch_embedding("labs", dim = 32) |>
+  scorch_join() |>
+  scorch_layer(units = 128, activation = "relu") |>
+  scorch_layer(units = 64, activation = "relu") |>
+  scorch_layer(units = 1, activation = "sigmoid")
+```
+
+::: {.fragment}
+Each line is a *named step* in the model.
+:::
+
+---
+
+## Slide 7
+
+## No OOP required
+
+One barrier to deep learning frameworks is reliance on object-oriented programming.
+
+::: {.fragment}  
+No need to define classes
+:::
+
+::: {.fragment} 
+No need to write `forward()` methods
+:::
+
+::: {.fragment} 
+No PyTorch module inheritance required
+:::
+
+::: {.fragment}
+Instead: build models with **composable functions**.
+:::
+
+---
+
+## Slide 8 {transition="convex"}
+
+# A quick demo
+
+## tinydiffusion on Datasaurus
+
+::: {.fragment}
+Even for a toy diffusion-style model, the raw training loop is mostly boilerplate.
+:::
+
+---
+
+## Slide 9
+
+## tinydiffusion + Datasaurus: code reduction
+
+::: {.columns}
+::: {.column width="50%"}
+
+### Python (PyTorch)
+
+```python
+# (sketch) tinydiffusion-style training loop
+model = TinyUNet(d_in=2, d_hidden=128)
+opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+
+for epoch in range(E):
+  for x0 in loader:                      # x0: (batch, 2)
+    t = torch.randint(0, T, (len(x0),))  # timesteps
+    eps = torch.randn_like(x0)           # noise
+    xt = q_sample(x0, t, eps)            # forward diffusion
+    eps_hat = model(xt, t)               # predict noise
+    loss = ((eps_hat - eps)**2).mean()
+    opt.zero_grad()
+    loss.backward()
+    opt.step()
+```
+
+:::
+::: {.column width="50%"}
+
+### scorcher
+
+```r
+model <- initiate_scorch() |>
+  scorch_input("x", shape = c(2)) |>
+  scorch_block("mlp", units = c(128, 128),
+               activation = "relu") |>
+  scorch_layer(units = 2, activation = "linear")
+
+workflow <- scorch_workflow() |>
+  scorch_data(train = datasaurus_tbl, x = "xy") |>
+  scorch_task("diffusion_noise_prediction",
+              timesteps = 1000,
+              loss = "mse") |>
+  scorch_train(optimizer = "adam",
+               lr = 1e-3, epochs = 50)
+
+fit <- workflow |> run_scorch(model)
+```
+
+:::
+:::
+
+::: {.fragment}
+**Takeaway:** scorcher keeps the *science* front-and-center and reduces loop + bookkeeping code.
+:::
+
+---
+
+## Slide 10 {transition="convex"}
+
+# Clinical example
+
+## Pulmonary embolism risk prediction
+
+---
+
+## Slide 11
+
+## Pulmonary embolism risk prediction
+
+We want to estimate:
+
+[
+P(\text{Pulmonary Embolism} \mid X)
+]
+
+where (X) includes:
+
+::: {.fragment} 
+structured EHR features
+:::
+
+::: {.fragment} 
+laboratory measurements
+:::
+
+::: {.fragment} 
+imaging-derived predictors
+:::
+
+::: {.fragment}
+Output: a calibrated probability that supports **clinical decision-making**.
+:::
+
+---
+
+## Slide 12
+
+## PE model structure (conceptually)
+
+A common pattern:
+
+::: {.fragment} 
+embed each feature group
+:::
+
+::: {.fragment} 
+join embeddings
+:::
+
+::: {.fragment} 
+shared network
+:::
+
+::: {.fragment} 
+output risk score
+:::
+
+```r
+pe_model <- initiate_scorch() |>
+  scorch_embedding("ehr_structured", dim = 64) |>
+  scorch_embedding("labs", dim = 32) |>
+  scorch_embedding("imaging_features", dim = 64) |>
+  scorch_join() |>
+  scorch_layer(units = 256, activation = "relu") |>
+  scorch_layer(units = 64, activation = "relu") |>
+  scorch_layer(units = 1, activation = "sigmoid")
+```
+
+---
+
+## Slide 13
+
+## Training workflow
+
+```r
+pe_fit <- pe_model |>
+  compile_scorch(
+    optimizer = "adam",
+    loss = "binary_crossentropy"
+  ) |>
+  fit(
+    train_data,
+    validation_data = val_data,
+    epochs = 50
+  )
+```
+
+::: {.fragment}
+Key idea: train → predict → evaluate, all **inside one R pipeline**.
+:::
+
+---
+
+## Slide 14
+
+## Why this matters for statistics
+
+Prediction models increasingly enter downstream analyses:
+
+::: {.fragment}  
+clinical risk scores
+:::
+
+::: {.fragment} 
+genomic prediction models
+:::
+
+::: {.fragment} 
+automated image analysis
+:::
+
+::: {.fragment}
+But predictions are **not data**.
+:::
+
+::: {.fragment}
+To use them responsibly we need:
+
+* transparent pipelines
+* reproducible training
+* evaluation + calibration
+* integration with statistical inference
+
+:::
+
+---
+
+## Slide 15
+
+## Next steps
+
+What we’re building toward:
+
+::: {.fragment} 
+workflow primitives for common biomedical tasks
+  *(classification, survival, segmentation, multimodal fusion)*
+:::
+
+::: {.fragment} 
+interoperability with modern model ecosystems
+  *(where it helps, without breaking R workflows)*
+:::
+
+::: {.fragment} 
+evaluation helpers
+  *(calibration, thresholds, subgroup performance)*
+:::
+
+::: {.fragment} 
+reproducible artifacts by default
+  *(configs, checkpoints, model cards, run logs)*
+:::
+
+---
+
+## Slide 16
+
+## Open source collaboration is the fastest path to success
+
+Deep learning infrastructure improves fastest when:
+
+::: {.fragment} 
+APIs are shaped by real use cases
+:::
+
+::: {.fragment} 
+bugs are found early, in diverse environments
+:::
+
+::: {.fragment} 
+features emerge from community needs
+:::
+
+::: {.fragment}
+What we want from collaborators:
+
+* try scorcher on your prediction problem
+* open issues with pain points / missing abstractions
+* contribute minimal “recipes”
+* help define evaluation standards
+
+:::
+
+---
+
+## Slide 17
+
+## Resources
+
+GitHub:
+
+```text
+github.com/jtleek/scorcher
+```
+
+Related work:
+
+* inference on predicted data (`ipd`)
+* biomedical imaging and clinical prediction projects
+
+---
+
+## Slide 18 {transition="fade"}
+
+# Thank you
+
+## Questions?
+
+Stephen Salerno · Fred Hutchinson Cancer Center
