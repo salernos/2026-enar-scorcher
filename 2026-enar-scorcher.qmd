@@ -14,7 +14,7 @@ csl: nature.csl
 format:
   revealjs:
     theme: [default, styles.scss]
-    logo: /images/theme/logo.png
+    logo: images/theme/logo.png
     footer: "2026 ENAR Spring Meeting · Indianapolis, IN"
     slide-number: true
     hash: true
@@ -31,7 +31,7 @@ format:
     code-line-numbers: true
     
 title-slide-attributes:
-  data-background-image: "/images/theme/bg1.png"
+  data-background-image: "images/theme/bg1.png"
   data-background-size: "auto 100%"
   data-background-position: "right"
 
