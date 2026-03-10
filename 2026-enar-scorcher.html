@@ -10,9 +10,9 @@
 <link href="2026-enar-scorcher_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.5.57">
 
-  <meta name="author" content="Stephen Salerno">
+  <meta name="author" content="Stephen Salerno, PhD">
   <meta name="dcterms.date" content="2026-03-16">
-  <title>scorcher: Deep Learning Pipelines for Reproducible Statistical Research</title>
+  <title>scorcher</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -95,11 +95,33 @@
     code span.va { color: #111111; } /* Variable */
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="2026-enar-scorcher_files/libs/revealjs/dist/theme/quarto.css">
   <link href="2026-enar-scorcher_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="2026-enar-scorcher_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="2026-enar-scorcher_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="2026-enar-scorcher_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="2026-enar-scorcher_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="2026-enar-scorcher_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
@@ -391,14 +413,15 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">scorcher: Deep Learning Pipelines for Reproducible Statistical Research</h1>
-  <p class="subtitle">ENAR Spring Meeting</p>
+<section id="title-slide" data-background-image="/images/theme/bg1.png" data-background-position="right" data-background-size="auto 100%" class="quarto-title-block center">
+  <h1 class="title">scorcher</h1>
+  <p class="subtitle"></p><p>An R Package to Democratize Building and Fitting<br>
+Torch Deep Learning Models</p><p></p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Stephen Salerno 
+Stephen Salerno, PhD 
 </div>
         <p class="quarto-title-affiliation">
             Fred Hutchinson Cancer Center
@@ -406,370 +429,561 @@ Stephen Salerno
     </div>
 </div>
 
-  <p class="date">2026-03-16</p>
+  <p class="date">March 16, 2026</p>
 </section>
-<section id="motivation" class="slide level2 center">
-<h2>Motivation</h2>
-<p>In biomedical research we increasingly want to build <strong>predictive models from complex data</strong>.</p>
-<div class="fragment">
-<p>Two motivating projects:</p>
+<section id="first-some-acknowledgements" class="slide level2 theme-bg3 center">
+<h2>First, Some Acknowledgements</h2>
+<div class="people-row">
+<div class="person">
+<p><img data-src="images/people/awan.jpg" class="headshot"></p>
+<p><strong>Awan Afiaz, MS</strong><br>
+<em>PhD Student</em><br>
+Public Health Sciences, Fred Hutch<br>
+Biostatistics, University of Washington</p>
 </div>
+<div class="person">
+<p><img data-src="images/people/barbara.jpg" class="headshot"></p>
+<p><strong>Barbara Lam, MD</strong><br>
+<em>Assistant Professor</em><br>
+Clinical Research Division, Fred Hutch<br>
+Hematology-Oncology, UW Medicine</p>
+</div>
+<div class="person">
+<p><img data-src="images/people/jeff.jpg" class="headshot"></p>
+<p><strong>Jeff Leek, PhD</strong><br>
+<em>Vice President and Chief Data Officer</em><br>
+<em>Professor, Biostatistics Program</em><br>
+<em>J. Orin Edson Foundation Endowed Chair</em><br>
+Public Health Sciences, Fred Hutch<br>
+Biostatistics, University of Washington</p>
+</div>
+</div>
+</section>
+<section id="background-survey-of-institutional-data-needs" class="slide level2 theme-bg3 center">
+<h2>Background: Survey of Institutional Data Needs</h2>
+<h3 id="conversations-spanning-1200-hours-from-319-individuals">213 conversations, spanning 1,200 hours, from 319 individuals</h3>
+<p><br></p>
+
+<img data-src="images/needs.PNG" class="r-stretch quarto-figure-center"><p class="caption"><span class="caption">Source: https://hutchdatascience.org/news/NeedsAssessmentv1/</span></p><div class="absolute" style="border: 5px solid #00C1D5; width: 475px; height: 70px; background: none;top: 23%; left: 43.5%; ">
+
+</div>
+</section>
+<section id="critical-need-for-better-off-the-shelf-aiml-research-tools" class="slide level2 theme-bg3 center">
+<h2>Critical need for better ‘off-the-shelf’ AI/ML research tools</h2>
+<h3 id="building-aiml-models-requires-significant-expertise">Building AI/ML models requires significant expertise</h3>
 <div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="pulmonary-embolism-risk-prediction">Pulmonary embolism risk prediction</h3>
-<p><strong>Awan + Barbara Lam</strong></p>
+<div class="column" style="width:70%;">
+<p><br></p>
+<p><br></p>
+<ul>
+<li class="fragment">Fluency in multiple programming ecosystems</li>
+<li class="fragment">Understanding framework-specific machine learning syntax</li>
+<li class="fragment">Managing computational infrastructure</li>
+</ul>
+<p><br></p>
 <div class="fragment">
-<p>Multimodal patient features</p>
+<p><em>But implementing AI/ML is not the same skill as understanding it.</em></p>
 </div>
-<div class="fragment">
-<p>Output: a <strong>risk score</strong> for PE</p>
-</div>
-</div><div class="column" style="width:50%;">
-<h3 id="automated-karyotyping">Automated karyotyping</h3>
-<div class="fragment">
-<p>Metaphase images → abnormalities</p>
-</div>
-<div class="fragment">
-<p>Models analyze <strong>100+ cells/patient</strong></p>
+</div><div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/overview.png" data-text-align="center"></p>
+<figcaption><span class="caption">Image Generated using GPT 5.2</span></figcaption>
+</figure>
 </div>
 </div></div>
-<div class="fragment">
-<p>Both require: flexible architectures · multimodal inputs · reproducible training</p>
-</div>
-</section>
-<section id="slide-3" class="slide level2 center">
-<h2>Slide 3</h2>
-</section>
-<section id="the-workflow-problem" class="slide level2 center">
-<h2>The workflow problem</h2>
-<p>Deep learning tools are powerful, but research workflows can become fragile.</p>
-<ul>
-<li>{.fragment} Python scripts for training</li>
-<li>{.fragment} Separate preprocessing pipelines</li>
-<li>{.fragment} Export results back into R for analysis</li>
-</ul>
-<div class="fragment">
-<p>This often leads to:</p>
-<ul>
-<li>brittle pipelines</li>
-<li>poor reproducibility</li>
-<li>models disconnected from downstream statistical workflows</li>
-</ul>
-</div>
-</section>
-<section id="slide-4" class="slide level2 center">
-<h2>Slide 4</h2>
-</section>
-<section id="why-scorcher" class="slide level2 center">
-<h2>Why scorcher?</h2>
-<p><strong>Goal:</strong> a research-friendly deep learning framework in R that is:</p>
-<div class="fragment">
-<p><strong>native R <code>torch</code></strong></p>
-</div>
-<div class="fragment">
-<p><strong>modular</strong> model components</p>
-</div>
-<div class="fragment">
-<p><strong>reproducible</strong> end-to-end workflows</p>
-</div>
-<div class="fragment">
-<p>designed for <strong>statistical research settings</strong></p>
-</div>
-</section>
-<section id="slide-5" class="slide level2 center">
-<h2>Slide 5</h2>
-</section>
-<section id="design-inspiration" class="slide level2 center">
-<h2>Design inspiration</h2>
-<p>We drew a lot of inspiration from:</p>
-<div class="fragment">
-<p>the <strong>Keras Functional API</strong></p>
-</div>
-<div class="fragment">
-<p>the <strong>keras3 R package</strong></p>
-</div>
-<div class="fragment">
-<p>But we wanted:</p>
-<ul>
-<li>a high-level API for <strong>native R <code>torch</code></strong></li>
-<li>a workflow that fits naturally into <strong>R analysis pipelines</strong></li>
-</ul>
-</div>
-</section>
-<section id="slide-6" class="slide level2 center">
-<h2>Slide 6</h2>
-</section>
-<section id="tidy-pipe-based-model-construction" class="slide level2 center">
-<h2>Tidy, pipe-based model construction</h2>
-<p>Models are built using <strong>tidy, pipable functions</strong>.</p>
-<div class="fragment">
-<p>This keeps the architecture explicit and readable:</p>
-</div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>model <span class="ot">&lt;-</span> <span class="fu">initiate_scorch</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a href=""></a>  <span class="fu">scorch_embedding</span>(<span class="st">"clinical_features"</span>, <span class="at">dim =</span> <span class="dv">64</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-3"><a href=""></a>  <span class="fu">scorch_embedding</span>(<span class="st">"labs"</span>, <span class="at">dim =</span> <span class="dv">32</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a href=""></a>  <span class="fu">scorch_join</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-5"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="at">units =</span> <span class="dv">128</span>, <span class="at">activation =</span> <span class="st">"relu"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-6"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="at">units =</span> <span class="dv">64</span>, <span class="at">activation =</span> <span class="st">"relu"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-7"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="at">units =</span> <span class="dv">1</span>, <span class="at">activation =</span> <span class="st">"sigmoid"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="fragment">
-<p>Each line is a <em>named step</em> in the model.</p>
-</div>
-</section>
-<section id="slide-7" class="slide level2 center">
-<h2>Slide 7</h2>
-</section>
-<section id="no-oop-required" class="slide level2 center">
-<h2>No OOP required</h2>
-<p>One barrier to deep learning frameworks is reliance on object-oriented programming.</p>
-<div class="fragment">
-<p>No need to define classes</p>
-</div>
-<div class="fragment">
-<p>No need to write <code>forward()</code> methods</p>
-</div>
-<div class="fragment">
-<p>No PyTorch module inheritance required</p>
-</div>
-<div class="fragment">
-<p>Instead: build models with <strong>composable functions</strong>.</p>
-</div>
-</section>
-<section id="slide-8" class="slide level2 center" data-transition="convex">
-<h2>Slide 8</h2>
 </section>
 <section>
-<section id="a-quick-demo" class="title-slide slide level1 center">
-<h1>A quick demo</h1>
+<section id="why-scorcher" class="title-slide slide level1 theme-bg2 center">
+<h1>Why <em>scorcher</em>?</h1>
+<div class="footer">
 
-</section>
-<section id="tinydiffusion-on-datasaurus" class="slide level2 center">
-<h2>tinydiffusion on Datasaurus</h2>
-<div class="fragment">
-<p>Even for a toy diffusion-style model, the raw training loop is mostly boilerplate.</p>
 </div>
 </section>
-<section id="slide-9" class="slide level2 center">
-<h2>Slide 9</h2>
-</section>
-<section id="tinydiffusion-datasaurus-code-reduction" class="slide level2 center">
-<h2>tinydiffusion + Datasaurus: code reduction</h2>
+<section id="goal-a-user-friendly-deep-learning-framework-in-r" class="slide level2 theme-bg3 center">
+<h2><strong>Goal:</strong> A user-friendly deep learning framework in R</h2>
+<h3 id="we-are-building">We are building:</h3>
 <div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="python-pytorch">Python (PyTorch)</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="co"># (sketch) tinydiffusion-style training loop</span></span>
-<span id="cb2-2"><a href=""></a>model <span class="op">=</span> TinyUNet(d_in<span class="op">=</span><span class="dv">2</span>, d_hidden<span class="op">=</span><span class="dv">128</span>)</span>
-<span id="cb2-3"><a href=""></a>opt <span class="op">=</span> torch.optim.Adam(model.parameters(), lr<span class="op">=</span><span class="fl">1e-3</span>)</span>
-<span id="cb2-4"><a href=""></a></span>
-<span id="cb2-5"><a href=""></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(E):</span>
-<span id="cb2-6"><a href=""></a>  <span class="cf">for</span> x0 <span class="kw">in</span> loader:                      <span class="co"># x0: (batch, 2)</span></span>
-<span id="cb2-7"><a href=""></a>    t <span class="op">=</span> torch.randint(<span class="dv">0</span>, T, (<span class="bu">len</span>(x0),))  <span class="co"># timesteps</span></span>
-<span id="cb2-8"><a href=""></a>    eps <span class="op">=</span> torch.randn_like(x0)           <span class="co"># noise</span></span>
-<span id="cb2-9"><a href=""></a>    xt <span class="op">=</span> q_sample(x0, t, eps)            <span class="co"># forward diffusion</span></span>
-<span id="cb2-10"><a href=""></a>    eps_hat <span class="op">=</span> model(xt, t)               <span class="co"># predict noise</span></span>
-<span id="cb2-11"><a href=""></a>    loss <span class="op">=</span> ((eps_hat <span class="op">-</span> eps)<span class="op">**</span><span class="dv">2</span>).mean()</span>
-<span id="cb2-12"><a href=""></a>    opt.zero_grad()</span>
-<span id="cb2-13"><a href=""></a>    loss.backward()</span>
-<span id="cb2-14"><a href=""></a>    opt.step()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div><div class="column" style="width:50%;">
-<h3 id="scorcher">scorcher</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>model <span class="ot">&lt;-</span> <span class="fu">initiate_scorch</span>() <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a href=""></a>  <span class="fu">scorch_input</span>(<span class="st">"x"</span>, <span class="at">shape =</span> <span class="fu">c</span>(<span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href=""></a>  <span class="fu">scorch_block</span>(<span class="st">"mlp"</span>, <span class="at">units =</span> <span class="fu">c</span>(<span class="dv">128</span>, <span class="dv">128</span>),</span>
-<span id="cb3-4"><a href=""></a>               <span class="at">activation =</span> <span class="st">"relu"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-5"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="at">units =</span> <span class="dv">2</span>, <span class="at">activation =</span> <span class="st">"linear"</span>)</span>
-<span id="cb3-6"><a href=""></a></span>
-<span id="cb3-7"><a href=""></a>workflow <span class="ot">&lt;-</span> <span class="fu">scorch_workflow</span>() <span class="sc">|&gt;</span></span>
-<span id="cb3-8"><a href=""></a>  <span class="fu">scorch_data</span>(<span class="at">train =</span> datasaurus_tbl, <span class="at">x =</span> <span class="st">"xy"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-9"><a href=""></a>  <span class="fu">scorch_task</span>(<span class="st">"diffusion_noise_prediction"</span>,</span>
-<span id="cb3-10"><a href=""></a>              <span class="at">timesteps =</span> <span class="dv">1000</span>,</span>
-<span id="cb3-11"><a href=""></a>              <span class="at">loss =</span> <span class="st">"mse"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-12"><a href=""></a>  <span class="fu">scorch_train</span>(<span class="at">optimizer =</span> <span class="st">"adam"</span>,</span>
-<span id="cb3-13"><a href=""></a>               <span class="at">lr =</span> <span class="fl">1e-3</span>, <span class="at">epochs =</span> <span class="dv">50</span>)</span>
-<span id="cb3-14"><a href=""></a></span>
-<span id="cb3-15"><a href=""></a>fit <span class="ot">&lt;-</span> workflow <span class="sc">|&gt;</span> <span class="fu">run_scorch</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="column" style="width:70%;">
+<p><br></p>
+<ul>
+<li class="fragment">A high-level API for <em>native R torch</em></li>
+<li class="fragment">Functional <em>modular</em> model components</li>
+<li class="fragment"><em>Reproducible</em> end-to-end workflows</li>
+<li class="fragment">Designed for researchers with <em>limited coding experience</em></li>
+</ul>
+</div><div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/scorcher.png"></p>
+<figcaption><span class="caption">Source: https://github.com/jtleek/scorcher</span></figcaption>
+</figure>
+</div>
 </div></div>
-<div class="fragment">
-<p><strong>Takeaway:</strong> scorcher keeps the <em>science</em> front-and-center and reduces loop + bookkeeping code.</p>
+</section>
+<section id="what-inspired-scorchers-design" class="slide level2 theme-bg3 center">
+<h2>What inspired <em>scorcher’s</em> design</h2>
+<h3 id="and-wherewhy-we-deviate">And where/why we deviate</h3>
+<p><br></p>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout="[[1,1],[1,1],[1,1],[1,1]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><strong>Inspired by:</strong></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><strong>We are creating:</strong></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="fragment quarto-layout-cell" data-fragment-index="1" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><br></p>
+<p>The <a href="https://keras.io/">Keras</a> Functional API in Python<span class="citation" data-cites="gulli2017deep"><sup><a href="#/references" role="doc-biblioref" onclick="">1</a></sup></span></p>
+</div>
+<div class="fragment quarto-layout-cell" data-fragment-index="2" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><br></p>
+<p>An API for functional model graphs, multi-input/output models, nonlinear topologies</p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="fragment quarto-layout-cell" data-fragment-index="3" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><br></p>
+<p>The <a href="https://keras3.posit.co/">keras3</a> R package<span class="citation" data-cites="chollet2022deep"><sup><a href="#/references" role="doc-biblioref" onclick="">2</a></sup></span></p>
+</div>
+<div class="fragment quarto-layout-cell" data-fragment-index="4" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><br></p>
+<p>Tidy, pipable functions that fit naturally into R-based analysis pipelines</p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="fragment quarto-layout-cell" data-fragment-index="5" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><br></p>
+<p>The <a href="https://torch.mlverse.org/">torch</a> R package (<a href="https://www.mlverse.org/">mlverse</a>)<span class="citation" data-cites="chowdhry2025deep"><sup><a href="#/references" role="doc-biblioref" onclick="">3</a></sup></span></p>
+</div>
+<div class="fragment quarto-layout-cell" data-fragment-index="6" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><br></p>
+<p>A package that is 100% native to R, without needing Python or reticulate</p>
+</div>
+</div>
 </div>
 </section>
-<section id="slide-10" class="slide level2 center" data-transition="convex">
-<h2>Slide 10</h2>
+<section id="write-models-like-sentences-via-composable-functions" class="slide level2 theme-bg3 center">
+<h2>Write models like sentences via composable functions</h2>
+<p><em>scorcher</em> lets you develop models by focusing on <em>what the model should do</em>, not <em>how to write code for it</em></p>
+<p><br></p>
+<div class="scorch-flow">
+<div class="flow-pair fragment" data-fragment-index="1">
+<div class="flow-text">
+<p>Load the data</p>
+</div>
+<div class="flow-code">
+<p><code>scorch_dataloader()</code></p>
+</div>
+</div>
+<div class="flow-step fragment" data-fragment-index="2">
+<div class="flow-text">
+<p>then</p>
+</div>
+<div class="flow-arrow">
+<p>|&gt;</p>
+</div>
+</div>
+<div class="flow-pair fragment" data-fragment-index="3">
+<div class="flow-text">
+<p>add layers</p>
+</div>
+<div class="flow-code">
+<p><code>scorch_layer()</code></p>
+</div>
+</div>
+<div class="flow-step fragment" data-fragment-index="4">
+<div class="flow-text">
+<p>then</p>
+</div>
+<div class="flow-arrow">
+<p>|&gt;</p>
+</div>
+</div>
+<div class="flow-pair fragment" data-fragment-index="5">
+<div class="flow-text">
+<p>compile the model</p>
+</div>
+<div class="flow-code">
+<p><code>compile_scorch()</code></p>
+</div>
+</div>
+<div class="flow-step fragment" data-fragment-index="6">
+<div class="flow-text">
+<p>then</p>
+</div>
+<div class="flow-arrow">
+<p>|&gt;</p>
+</div>
+</div>
+<div class="flow-pair fragment" data-fragment-index="7">
+<div class="flow-text">
+<p>fit the model</p>
+</div>
+<div class="flow-code">
+<p><code>fit_scorch()</code></p>
+</div>
+</div>
+</div>
+</section>
+<section id="this-keeps-architectures-explicit-and-readable" class="slide level2 theme-bg3 center">
+<h2>This keeps architectures explicit and readable …</h2>
+<h3 id="mnist-cnn-in-20-lines-w-scorcher">MNIST CNN in 20 lines w/ <em>scorcher</em></h3>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="1|2|3-15|16-19|20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(scorcher)</span>
+<span id="cb1-2"><a href=""></a>dl <span class="ot">&lt;-</span> <span class="fu">scorch_create_dataloader</span>(x_train, y_train, <span class="at">batch_size =</span> <span class="dv">500</span>)</span>
+<span id="cb1-3"><a href=""></a>scorch_model <span class="ot">&lt;-</span> <span class="fu">initiate_scorch</span>(dl) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href=""></a>  <span class="fu">scorch_input</span>(<span class="st">"x"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="st">"conv1"</span>, conv2d, <span class="dv">1</span>, <span class="dv">32</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-6"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="st">"act1"</span>,  relu) <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="st">"conv2"</span>, conv2d, <span class="dv">32</span>, <span class="dv">64</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-8"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="st">"act2"</span>,  relu) <span class="sc">|&gt;</span></span>
+<span id="cb1-9"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="st">"pool1"</span>, max_pool2d, <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href=""></a>  <span class="fu">scorch_dropout</span>(<span class="st">"drop1"</span>, <span class="at">p =</span> <span class="fl">0.25</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-11"><a href=""></a>  <span class="fu">scorch_flatten</span>(<span class="st">"flat1"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-12"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="st">"fc1"</span>, linear, <span class="dv">9216</span>, <span class="dv">128</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-13"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="st">"act3"</span>, relu) <span class="sc">|&gt;</span></span>
+<span id="cb1-14"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="st">"fc2"</span>, linear, <span class="dv">128</span>, <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-15"><a href=""></a>  <span class="fu">scorch_output</span>(<span class="st">"fc2"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-16"><a href=""></a>  <span class="fu">compile_scorch</span>(</span>
+<span id="cb1-17"><a href=""></a>    <span class="at">loss_fn          =</span> <span class="fu">nn_cross_entropy_loss</span>(),</span>
+<span id="cb1-18"><a href=""></a>    <span class="at">optimizer_fn     =</span> optim_adam,</span>
+<span id="cb1-19"><a href=""></a>    <span class="at">optimizer_params =</span> <span class="fu">list</span>(<span class="at">lr =</span> <span class="fl">0.001</span>))  <span class="sc">|&gt;</span></span>
+<span id="cb1-20"><a href=""></a>  <span class="fu">fit_scorch</span>(<span class="at">num_epochs =</span> <span class="dv">10</span>, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column center" style="width:60%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/mnist.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+<ul>
+<li class="fragment"><strong>Data:</strong> 70k grayscale handwritten digits, from 0 to 9</li>
+<li class="fragment"><strong>Goal:</strong> Classify images into categories (0-9)</li>
+<li class="fragment"><strong>Result:</strong> Test accuracy of 98.56% after 10 epochs</li>
+</ul>
+</div></div>
+</section>
+<section id="even-for-complex-architectures" class="slide level2 theme-bg3 center">
+<h2>… even for complex architectures</h2>
+<h3 id="example-diffusion-model-w-the-datasaurus-dozen">Example Diffusion Model w/ the Datasaurus Dozen</h3>
+<p><br></p>
+<ul>
+<li class="fragment"><strong>Task:</strong> Generate an image of a T-Rex from random noise</li>
+<li class="fragment"><strong>Result:</strong> <em>Scorcher</em> produces model with 85% less code</li>
+<li class="fragment"><strong>Benefit:</strong> <em>Scorcher</em> code is:
+<ul>
+<li class="fragment">Human-readable</li>
+<li class="fragment">Easy to explain <em>and</em> reproduce</li>
+<li class="fragment">No prior knowledge of Torch syntax</li>
+</ul></li>
+</ul>
+<div class="absolute" style="top: 5%; left: 70%; ">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/tiny-diffusion.png"></p>
+<figcaption><span class="caption">Images and Python Code: <a href="github.com/tanelp/tiny-diffusion">github.com/tanelp/tiny-diffusion</a></span></figcaption>
+</figure>
+</div>
+</div>
 </section></section>
 <section>
-<section id="clinical-example" class="title-slide slide level1 center">
-<h1>Clinical example</h1>
+<section id="a-clinical-example" class="title-slide slide level1 theme-bg2 center">
+<h1>A Clinical Example</h1>
+<div class="footer">
 
-</section>
-<section id="pulmonary-embolism-risk-prediction-1" class="slide level2 center">
-<h2>Pulmonary embolism risk prediction</h2>
-</section>
-<section id="slide-11" class="slide level2 center">
-<h2>Slide 11</h2>
-</section>
-<section id="pulmonary-embolism-risk-prediction-2" class="slide level2 center">
-<h2>Pulmonary embolism risk prediction</h2>
-<p>We want to estimate:</p>
-<p>[ P( X)]</p>
-<p>where (X) includes:</p>
-<div class="fragment">
-<p>structured EHR features</p>
-</div>
-<div class="fragment">
-<p>laboratory measurements</p>
-</div>
-<div class="fragment">
-<p>imaging-derived predictors</p>
-</div>
-<div class="fragment">
-<p>Output: a calibrated probability that supports <strong>clinical decision-making</strong>.</p>
 </div>
 </section>
-<section id="slide-12" class="slide level2 center">
-<h2>Slide 12</h2>
-</section>
-<section id="pe-model-structure-conceptually" class="slide level2 center">
-<h2>PE model structure (conceptually)</h2>
-<p>A common pattern:</p>
+<section id="we-are-piloting-scorcher-for-clinical-research" class="slide level2 theme-bg3 center">
+<h2>We are piloting <em>scorcher</em> for clinical research</h2>
+<h3 id="multimodal-pulmonary-embolism-risk-prediction">Multimodal pulmonary embolism risk prediction</h3>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:60%;">
 <div class="fragment">
-<p>embed each feature group</p>
-</div>
-<div class="fragment">
-<p>join embeddings</p>
-</div>
-<div class="fragment">
-<p>shared network</p>
-</div>
-<div class="fragment">
-<p>output risk score</p>
-</div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>pe_model <span class="ot">&lt;-</span> <span class="fu">initiate_scorch</span>() <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href=""></a>  <span class="fu">scorch_embedding</span>(<span class="st">"ehr_structured"</span>, <span class="at">dim =</span> <span class="dv">64</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-3"><a href=""></a>  <span class="fu">scorch_embedding</span>(<span class="st">"labs"</span>, <span class="at">dim =</span> <span class="dv">32</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-4"><a href=""></a>  <span class="fu">scorch_embedding</span>(<span class="st">"imaging_features"</span>, <span class="at">dim =</span> <span class="dv">64</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-5"><a href=""></a>  <span class="fu">scorch_join</span>() <span class="sc">|&gt;</span></span>
-<span id="cb4-6"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="at">units =</span> <span class="dv">256</span>, <span class="at">activation =</span> <span class="st">"relu"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-7"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="at">units =</span> <span class="dv">64</span>, <span class="at">activation =</span> <span class="st">"relu"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-8"><a href=""></a>  <span class="fu">scorch_layer</span>(<span class="at">units =</span> <span class="dv">1</span>, <span class="at">activation =</span> <span class="st">"sigmoid"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="slide-13" class="slide level2 center">
-<h2>Slide 13</h2>
-</section>
-<section id="training-workflow" class="slide level2 center">
-<h2>Training workflow</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>pe_fit <span class="ot">&lt;-</span> pe_model <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a href=""></a>  <span class="fu">compile_scorch</span>(</span>
-<span id="cb5-3"><a href=""></a>    <span class="at">optimizer =</span> <span class="st">"adam"</span>,</span>
-<span id="cb5-4"><a href=""></a>    <span class="at">loss =</span> <span class="st">"binary_crossentropy"</span></span>
-<span id="cb5-5"><a href=""></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb5-6"><a href=""></a>  <span class="fu">fit</span>(</span>
-<span id="cb5-7"><a href=""></a>    train_data,</span>
-<span id="cb5-8"><a href=""></a>    <span class="at">validation_data =</span> val_data,</span>
-<span id="cb5-9"><a href=""></a>    <span class="at">epochs =</span> <span class="dv">50</span></span>
-<span id="cb5-10"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="fragment">
-<p>Key idea: train → predict → evaluate, all <strong>inside one R pipeline</strong>.</p>
-</div>
-</section>
-<section id="slide-14" class="slide level2 center">
-<h2>Slide 14</h2>
-</section>
-<section id="why-this-matters-for-statistics" class="slide level2 center">
-<h2>Why this matters for statistics</h2>
-<p>Prediction models increasingly enter downstream analyses:</p>
-<div class="fragment">
-<p>clinical risk scores</p>
-</div>
-<div class="fragment">
-<p>genomic prediction models</p>
-</div>
-<div class="fragment">
-<p>automated image analysis</p>
-</div>
-<div class="fragment">
-<p>But predictions are <strong>not data</strong>.</p>
-</div>
-<div class="fragment">
-<p>To use them responsibly we need:</p>
 <ul>
-<li>transparent pipelines</li>
-<li>reproducible training</li>
-<li>evaluation + calibration</li>
-<li>integration with statistical inference</li>
+<li class="fragment">3rd most common cause of <em>cardiovascular death</em></li>
+<li class="fragment">Screening relies on <em>subjective</em> decision rules</li>
+<li class="fragment"><em>Gold standard</em> CTPA is expensive, involves radiation, and is not always readily available</li>
 </ul>
 </div>
+</div><div class="column" style="width:40%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/pe.png" style="width:100.0%"></p>
+<figcaption><span class="caption">Source: https://www.myphteam.com/resources/can-pulmonary-embolism-cause-ph-lung-sounds-and-more</span></figcaption>
+</figure>
+</div>
+</div></div>
 </section>
-<section id="slide-15" class="slide level2 center">
-<h2>Slide 15</h2>
+<section id="medical-imaging-provides-a-potential-alternative" class="slide level2 theme-bg3 center">
+<h2>Medical imaging provides a potential alternative</h2>
+<h3 id="objective-standardized-available-before-clinical-probability-is-formally-assessed">Objective, standardized, available before clinical probability is formally assessed</h3>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:70%;">
+<ul>
+<li class="fragment">Routinely obtained in the emergency department:
+<ul>
+<li class="fragment">Chest X-Rays (CXR)</li>
+<li class="fragment">Electrocardiograms (EKG)</li>
+</ul></li>
+<li class="fragment">Prior AI/ML work has used:
+<ul>
+<li class="fragment">EKG alone<span class="citation" data-cites="silva2023artificial wysokinski2024electrocardiogram"><sup><a href="#/references" role="doc-biblioref" onclick="">4</a>,<a href="#/references" role="doc-biblioref" onclick="">5</a></sup></span></li>
+<li class="fragment">EKG with EHR data<span class="citation" data-cites="somani2022development"><sup><a href="#/references" role="doc-biblioref" onclick="">6</a></sup></span></li>
+</ul></li>
+<li class="fragment">No prior work with CXR</li>
+</ul>
+</div><div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/cxr.png" style="width:100.0%" data-margin-bottom="-100px"></p>
+<figcaption><span class="caption">Source: https://jbsr.be/articles/10.5334/jbsr.3052</span></figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/ekg.png" style="width:100.0%"></p>
+<figcaption><span class="caption">Source: https://epomedicine.com/emergency-medicine/ecg-changes-in-pulmonary-embolism/</span></figcaption>
+</figure>
+</div>
+</div></div>
 </section>
-<section id="next-steps" class="slide level2 center">
+<section id="preliminary-study-using-mimic-ivjohnson2023author" class="slide level2 theme-bg3 center">
+<h2>Preliminary study using MIMIC-IV<span class="citation" data-cites="johnson2023author"><sup><a href="#/references" role="doc-biblioref" onclick="">7</a></sup></span></h2>
+<h3 id="adult-patients-undergoing-ctpa-for-pe-with-cxr-and-ekg-48-hr-before-ctpa">886 adult patients undergoing CTPA for PE with CXR and EKG &lt; 48 hr before CTPA</h3>
+<p><br></p>
+<ul>
+<li class="fragment">212 PE+ (23.9%) classified by clinical review of CTPA reports</li>
+<li class="fragment">CXR: 1,376-dimensional embeddings from EfficientNet-L2 pre-trained on chest radiographs</li>
+<li class="fragment">EKG: Raw 12-lead waveform data (5,000 samples/lead, 500 Hz)</li>
+<li class="fragment">Stratified 70/15/15 (train/test/validation), prioritizing sensitivity for screening</li>
+</ul>
+</section>
+<section id="fusion-cnn-model" class="slide level2 theme-bg3 center">
+<h2>Fusion CNN model</h2>
+<h3 id="a-common-model-structure-in-biomedical-applications">A common model structure in biomedical applications</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><br></p>
+<ol type="1">
+<li class="fragment">Modality-specific arms</li>
+<li class="fragment">Join (concatenate) embeddings</li>
+<li class="fragment">Shared subnetwork</li>
+<li class="fragment">Output risk score</li>
+</ol>
+<div class="fragment">
+<p>93.9% Sensitivity (Revised Geneva: 91%),<span class="citation" data-cites="lucassen2011clinical"><sup><a href="#/references" role="doc-biblioref" onclick="">8</a></sup></span> 22.5% Specificity, 0.48 AUPRC (2x baseline)</p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/fusion.png" class="quarto-figure quarto-figure-center" style="width:75.0%"></p>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="next-steps" class="slide level2 theme-bg3 center">
 <h2>Next steps</h2>
-<p>What we’re building toward:</p>
-<div class="fragment">
-<p>workflow primitives for common biomedical tasks <em>(classification, survival, segmentation, multimodal fusion)</em></p>
-</div>
-<div class="fragment">
-<p>interoperability with modern model ecosystems <em>(where it helps, without breaking R workflows)</em></p>
-</div>
-<div class="fragment">
-<p>evaluation helpers <em>(calibration, thresholds, subgroup performance)</em></p>
-</div>
-<div class="fragment">
-<p>reproducible artifacts by default <em>(configs, checkpoints, model cards, run logs)</em></p>
-</div>
+<h3 id="what-were-building-toward">What we’re building toward:</h3>
+<ul>
+<li class="fragment">A more mature functional graph-based API</li>
+<li class="fragment">Support for chained pipelines/workflows (e.g., segmentation -&gt; classification -&gt; prediction)</li>
+<li class="fragment">Infrastructure for distributed/federated learning</li>
+<li class="fragment">Better evaluation helpers</li>
+<li class="fragment">Better interoperability with the mlverse</li>
+<li class="fragment">Reproducible artifacts (e.g., serialized configs/checkpoints, run logs, architecture diagrams)</li>
+</ul>
 </section>
-<section id="slide-16" class="slide level2 center">
-<h2>Slide 16</h2>
-</section>
-<section id="open-source-collaboration-is-the-fastest-path-to-success" class="slide level2 center">
+<section id="open-source-collaboration-is-the-fastest-path-to-success" class="slide level2 theme-bg3 center">
 <h2>Open source collaboration is the fastest path to success</h2>
+<h3 id="train---predict---evaluate-all-inside-one-reproducible-r-pipeline">Train -&gt; predict -&gt; evaluate, all inside one reproducible R pipeline</h3>
+<p><br></p>
 <p>Deep learning infrastructure improves fastest when:</p>
-<div class="fragment">
-<p>APIs are shaped by real use cases</p>
-</div>
-<div class="fragment">
-<p>bugs are found early, in diverse environments</p>
-</div>
-<div class="fragment">
-<p>features emerge from community needs</p>
-</div>
-<div class="fragment">
-<p>What we want from collaborators:</p>
 <ul>
-<li>try scorcher on your prediction problem</li>
-<li>open issues with pain points / missing abstractions</li>
-<li>contribute minimal “recipes”</li>
-<li>help define evaluation standards</li>
+<li class="fragment">APIs are shaped by real use cases</li>
+<li class="fragment">Features emerge from community needs</li>
+<li class="fragment">Bugs are found early, in diverse environments</li>
+</ul>
+<div class="fragment">
+<p><strong>If this interests you:</strong></p>
+</div>
+<ul>
+<li class="fragment">Try <em>scorcher</em> in your own research</li>
+<li class="fragment">Open issues and let us know your experience</li>
+<li class="fragment">Help us define evaluation standards</li>
+</ul>
+<p>:::</p>
+</section>
+<section id="thank-you" class="slide level2 theme-bg3 center">
+<h2>Thank You!</h2>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><span style="color:#cc0000;">NEED !! QR FOR THIS TALK!!!</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/qr_github.png" class="quarto-figure quarto-figure-center" style="width:75.0%"></p>
+</figure>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong>Scorcher Repo:</strong> <a href="https://github.com/jtleek/scorcher">https://github.com/jtleek/scorcher</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/qr_github.png" class="quarto-figure quarto-figure-center" style="width:75.0%"></p>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="references" class="slide level2 theme-bg3 smaller scrollable">
+<h2>References</h2>
+<p><br></p>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-gulli2017deep" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Gulli, A. &amp; Pal, S. <em>Deep Learning with Keras</em>. (Packt Publishing Ltd, 2017).</div>
+</div>
+<div id="ref-chollet2022deep" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Chollet, F., Kalinowski, T. &amp; Allaire, J. J. <em>Deep Learning with r</em>. (Simon; Schuster, 2022).</div>
+</div>
+<div id="ref-chowdhry2025deep" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Chowdhry, A. K. Deep learning and scientific computing with r torch. (2025).</div>
+</div>
+<div id="ref-silva2023artificial" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Silva, B. V., Marques, J., Menezes, M. N., Oliveira, A. L. &amp; Pinto, F. J. Artificial intelligence-based diagnosis of acute pulmonary embolism: Development of a machine learning model using 12-lead electrocardiogram. <em>Revista Portuguesa de Cardiologia</em> <strong>42</strong>, 643–651 (2023).</div>
+</div>
+<div id="ref-wysokinski2024electrocardiogram" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Wysokinski, W. E. <em>et al.</em> Electrocardiogram signal analysis with a machine learning model predicts the presence of pulmonary embolism with accuracy dependent on embolism burden. <em>Mayo Clinic Proceedings: Digital Health</em> <strong>2</strong>, 453–462 (2024).</div>
+</div>
+<div id="ref-somani2022development" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Somani, S. S. <em>et al.</em> Development of a machine learning model using electrocardiogram signals to improve acute pulmonary embolism screening. <em>European Heart Journal-Digital Health</em> <strong>3</strong>, 56–66 (2022).</div>
+</div>
+<div id="ref-johnson2023author" class="csl-entry" role="listitem">
+<div class="csl-left-margin">7. </div><div class="csl-right-inline">Johnson, A. E. <em>et al.</em> Author correction: MIMIC-IV, a freely accessible electronic health record dataset. <em>Scientific data</em> <strong>10</strong>, 31 (2023).</div>
+</div>
+<div id="ref-lucassen2011clinical" class="csl-entry" role="listitem">
+<div class="csl-left-margin">8. </div><div class="csl-right-inline">Lucassen, W. <em>et al.</em> Clinical decision rules for excluding pulmonary embolism: A meta-analysis. <em>Annals of internal medicine</em> <strong>155</strong>, 448–460 (2011).</div>
+</div>
+</div>
+</section>
+<section id="no-object-oriented-programming-required" class="slide level2 theme-bg3 center">
+<h2>No object-oriented programming required</h2>
+<h3 id="here-is-an-example-simple-cnn-for-mnist">Here is an example ‘simple’ CNN for MNIST</h3>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" data-code-line-numbers="1-4|5-14|15-29|30-62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">library</span>(torch)</span>
+<span id="cb2-2"><a href=""></a><span class="fu">library</span>(torchvision)</span>
+<span id="cb2-3"><a href=""></a>train_dl <span class="ot">&lt;-</span> <span class="fu">dataloader</span>(train_ds, <span class="at">batch_size =</span> <span class="dv">32</span>, <span class="at">shuffle =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-4"><a href=""></a>test_dl  <span class="ot">&lt;-</span> <span class="fu">dataloader</span>(test_ds, <span class="at">batch_size =</span> <span class="dv">32</span>)</span>
+<span id="cb2-5"><a href=""></a>net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb2-6"><a href=""></a>  <span class="st">"Net"</span>,</span>
+<span id="cb2-7"><a href=""></a>  <span class="at">initialize =</span> <span class="cf">function</span>() {</span>
+<span id="cb2-8"><a href=""></a>    self<span class="sc">$</span>conv1 <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(<span class="dv">1</span>, <span class="dv">32</span>, <span class="dv">3</span>, <span class="dv">1</span>)</span>
+<span id="cb2-9"><a href=""></a>    self<span class="sc">$</span>conv2 <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(<span class="dv">32</span>, <span class="dv">64</span>, <span class="dv">3</span>, <span class="dv">1</span>)</span>
+<span id="cb2-10"><a href=""></a>    self<span class="sc">$</span>dropout1 <span class="ot">&lt;-</span> <span class="fu">nn_dropout2d</span>(<span class="fl">0.25</span>)</span>
+<span id="cb2-11"><a href=""></a>    self<span class="sc">$</span>dropout2 <span class="ot">&lt;-</span> <span class="fu">nn_dropout2d</span>(<span class="fl">0.5</span>)</span>
+<span id="cb2-12"><a href=""></a>    self<span class="sc">$</span>fc1 <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(<span class="dv">9216</span>, <span class="dv">128</span>)</span>
+<span id="cb2-13"><a href=""></a>    self<span class="sc">$</span>fc2 <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(<span class="dv">128</span>, <span class="dv">10</span>)</span>
+<span id="cb2-14"><a href=""></a>  },</span>
+<span id="cb2-15"><a href=""></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
+<span id="cb2-16"><a href=""></a>    x <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">conv1</span>(x)</span>
+<span id="cb2-17"><a href=""></a>    x <span class="ot">&lt;-</span> <span class="fu">nnf_relu</span>(x)</span>
+<span id="cb2-18"><a href=""></a>    x <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">conv2</span>(x)</span>
+<span id="cb2-19"><a href=""></a>    x <span class="ot">&lt;-</span> <span class="fu">nnf_relu</span>(x)</span>
+<span id="cb2-20"><a href=""></a>    x <span class="ot">&lt;-</span> <span class="fu">nnf_max_pool2d</span>(x, <span class="dv">2</span>)</span>
+<span id="cb2-21"><a href=""></a>    x <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">dropout1</span>(x)</span>
+<span id="cb2-22"><a href=""></a>    x <span class="ot">&lt;-</span> <span class="fu">torch_flatten</span>(x, <span class="at">start_dim =</span> <span class="dv">2</span>)</span>
+<span id="cb2-23"><a href=""></a>    x <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">fc1</span>(x)</span>
+<span id="cb2-24"><a href=""></a>    x <span class="ot">&lt;-</span> <span class="fu">nnf_relu</span>(x)</span>
+<span id="cb2-25"><a href=""></a>    x <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">dropout2</span>(x)</span>
+<span id="cb2-26"><a href=""></a>    output <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">fc2</span>(x)</span>
+<span id="cb2-27"><a href=""></a>    output</span>
+<span id="cb2-28"><a href=""></a>  }</span>
+<span id="cb2-29"><a href=""></a>)</span>
+<span id="cb2-30"><a href=""></a>model <span class="ot">&lt;-</span> <span class="fu">net</span>()</span>
+<span id="cb2-31"><a href=""></a>device <span class="ot">&lt;-</span> <span class="cf">if</span>(<span class="fu">cuda_is_available</span>()) <span class="st">"cuda"</span> <span class="cf">else</span> <span class="st">"cpu"</span></span>
+<span id="cb2-32"><a href=""></a>model<span class="sc">$</span><span class="fu">to</span>(<span class="at">device =</span> device)</span>
+<span id="cb2-33"><a href=""></a>optimizer <span class="ot">&lt;-</span> <span class="fu">optim_sgd</span>(model<span class="sc">$</span>parameters, <span class="at">lr =</span> <span class="fl">0.01</span>)</span>
+<span id="cb2-34"><a href=""></a>epochs <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb2-35"><a href=""></a><span class="cf">for</span> (epoch <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb2-36"><a href=""></a>  pb <span class="ot">&lt;-</span> progress<span class="sc">::</span>progress_bar<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb2-37"><a href=""></a>    <span class="at">total =</span> <span class="fu">length</span>(train_dl),</span>
+<span id="cb2-38"><a href=""></a>    <span class="at">format =</span> <span class="st">"[:bar] :eta Loss: :loss"</span></span>
+<span id="cb2-39"><a href=""></a>  )</span>
+<span id="cb2-40"><a href=""></a>  train_losses <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb2-41"><a href=""></a>  test_losses <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb2-42"><a href=""></a>  coro<span class="sc">::</span><span class="fu">loop</span>(<span class="cf">for</span> (b <span class="cf">in</span> train_dl) {</span>
+<span id="cb2-43"><a href=""></a>    optimizer<span class="sc">$</span><span class="fu">zero_grad</span>()</span>
+<span id="cb2-44"><a href=""></a>    output <span class="ot">&lt;-</span> <span class="fu">model</span>(b[[<span class="dv">1</span>]]<span class="sc">$</span><span class="fu">to</span>(<span class="at">device =</span> device))</span>
+<span id="cb2-45"><a href=""></a>    loss <span class="ot">&lt;-</span> <span class="fu">nnf_cross_entropy</span>(output, b[[<span class="dv">2</span>]]<span class="sc">$</span><span class="fu">to</span>(<span class="at">device =</span> device))</span>
+<span id="cb2-46"><a href=""></a>    loss<span class="sc">$</span><span class="fu">backward</span>()</span>
+<span id="cb2-47"><a href=""></a>    optimizer<span class="sc">$</span><span class="fu">step</span>()</span>
+<span id="cb2-48"><a href=""></a>    train_losses <span class="ot">&lt;-</span> <span class="fu">c</span>(train_losses, loss<span class="sc">$</span><span class="fu">item</span>())</span>
+<span id="cb2-49"><a href=""></a>    pb<span class="sc">$</span><span class="fu">tick</span>(<span class="at">tokens =</span> <span class="fu">list</span>(<span class="at">loss =</span> <span class="fu">mean</span>(train_losses)))</span>
+<span id="cb2-50"><a href=""></a>  })</span>
+<span id="cb2-51"><a href=""></a>  <span class="fu">with_no_grad</span>({</span>
+<span id="cb2-52"><a href=""></a>    coro<span class="sc">::</span><span class="fu">loop</span>(<span class="cf">for</span> (b <span class="cf">in</span> test_dl) {</span>
+<span id="cb2-53"><a href=""></a>      model<span class="sc">$</span><span class="fu">eval</span>()</span>
+<span id="cb2-54"><a href=""></a>      output <span class="ot">&lt;-</span> <span class="fu">model</span>(b[[<span class="dv">1</span>]]<span class="sc">$</span><span class="fu">to</span>(<span class="at">device =</span> device))</span>
+<span id="cb2-55"><a href=""></a>      loss <span class="ot">&lt;-</span> <span class="fu">nnf_cross_entropy</span>(output, b[[<span class="dv">2</span>]]<span class="sc">$</span><span class="fu">to</span>(<span class="at">device =</span> device))</span>
+<span id="cb2-56"><a href=""></a>      test_losses <span class="ot">&lt;-</span> <span class="fu">c</span>(test_losses, loss<span class="sc">$</span><span class="fu">item</span>())</span>
+<span id="cb2-57"><a href=""></a>      model<span class="sc">$</span><span class="fu">train</span>()</span>
+<span id="cb2-58"><a href=""></a>    })</span>
+<span id="cb2-59"><a href=""></a>  })</span>
+<span id="cb2-60"><a href=""></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Loss at epoch %d [Train: %3f] [Test: %3f]</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb2-61"><a href=""></a>              epoch, <span class="fu">mean</span>(train_losses), <span class="fu">mean</span>(test_losses)))</span>
+<span id="cb2-62"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:60%;">
+<p><br></p>
+<p>This requires:</p>
+<ul>
+<li class="fragment">Defing modules and mutable objects by hand</li>
+<li class="fragment">Writing custom forward methods and training loops</li>
+<li class="fragment">Relying on PyTorch inheritance conventions</li>
+</ul>
+</div></div>
+</section>
+<section id="fit-separate-cnns-on-each-modality" class="slide level2 theme-bg3 center">
+<h2>Fit separate CNNs on each modality</h2>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="cxr-only">CXR Only</h3>
+<div class="fragment">
+<ul>
+<li class="fragment"><p>3,590 embeddings, 8.4% prevalence</p></li>
+<li class="fragment"><p>AUPRC of 0.20 (2.4x baseline)</p></li>
+<li class="fragment"><p>Sensitivity of <span style="color:#cc0000;">XYZ</span></p></li>
+<li class="fragment"><p>Specificity of <span style="color:#cc0000;">XYZ</span></p></li>
 </ul>
 </div>
-</section>
-<section id="slide-17" class="slide level2 center">
-<h2>Slide 17</h2>
-</section>
-<section id="resources" class="slide level2 center">
-<h2>Resources</h2>
-<p>GitHub:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a href=""></a>github.com/jtleek/scorcher</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Related work:</p>
+</div><div class="column" style="width:50%;">
+<h3 id="ekg-only">EKG Only</h3>
+<div class="fragment">
 <ul>
-<li>inference on predicted data (<code>ipd</code>)</li>
-<li>biomedical imaging and clinical prediction projects</li>
+<li class="fragment"><p>2,925 records, 23.5% prevalence</p></li>
+<li class="fragment"><p>AUPRC of 0.392 (1.7x baseline)</p></li>
+<li class="fragment"><p>Sensitivity of 88.5%</p></li>
+<li class="fragment"><p>Specificity of 20.9%</p></li>
 </ul>
-</section>
-<section id="slide-18" class="slide level2 center" data-transition="fade">
-<h2>Slide 18</h2>
-</section></section>
-<section>
-<section id="thank-you" class="title-slide slide level1 center">
-<h1>Thank you</h1>
-
-</section>
-<section id="questions" class="slide level2 center">
-<h2>Questions?</h2>
-<p>Stephen Salerno · Fred Hutchinson Cancer Center</p>
+</div>
+</div></div>
 <div class="quarto-auto-generated-content">
+<p><img src="/images/theme/logo.png" class="slide-logo"></p>
 <div class="footer footer-default">
-
+<p>2026 ENAR Spring Meeting · Indianapolis, IN</p>
 </div>
 </div>
 </section></section>
@@ -783,6 +997,7 @@ Stephen Salerno
   <script src="2026-enar-scorcher_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="2026-enar-scorcher_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="2026-enar-scorcher_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="2026-enar-scorcher_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="2026-enar-scorcher_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
@@ -803,7 +1018,8 @@ Stephen Salerno
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
 'smaller': false,
  
         // Display controls in the bottom right corner
@@ -926,10 +1142,10 @@ Stephen Salerno
         hideCursorTime: 5000,
 
         // Opens links in an iframe preview overlay
-        previewLinks: false,
+        previewLinks: true,
 
         // Transition style (none/fade/slide/convex/concave/zoom)
-        transition: 'slide',
+        transition: 'fade',
 
         // Transition speed (default/fast/slow)
         transitionSpeed: 'default',
@@ -954,7 +1170,7 @@ Stephen Salerno
         height: 720,
 
         // Factor of the display size that should remain empty around the content
-        margin: 6.0e-2,
+        margin: 0.1,
 
         math: {
           mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
@@ -974,7 +1190,7 @@ Stephen Salerno
         },
 
         // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
 
           RevealMath,
           RevealNotes,
@@ -983,6 +1199,82 @@ Stephen Salerno
         ]
       });
     </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {
