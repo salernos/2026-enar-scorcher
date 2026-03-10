@@ -80,8 +80,7 @@ $presentation-title-slide-text-align: left;
 
 .theme-bg3 {
   &:is(.slide-background) {
-    background-image: url("/2026-enar-scorcher/images/theme/bg3.png");
-    //background-color: #FFFFFF;
+    background-image: url("https://salernos.github.io/2026-enar-scorcher/images/theme/bg3.png");
     @include background-half;
   }
   h2 {
@@ -129,7 +128,7 @@ h1 {
 
 .theme-bg2 {
   &:is(.slide-background) {
-    background-image: url("/2026-enar-scorcher/images/theme/bg2.png");
+    background-image: url("https://salernos.github.io/2026-enar-scorcher/images/theme/bg2.png");
     background-color: $hutch-cyan;
     @include background-full;
   }
@@ -138,18 +137,15 @@ h1 {
   }
 }
 
-/* Targets all source code blocks (input) */
 .reveal pre code.sourceCode {
   font-size: 0.5em !important; 
   max-height: 800px;
 }
 
-/* Targets code block outputs (stdout) */
 .reveal .cell-output-stdout code {
   font-size: 0.5em !important;
 }
 
-/* Targets inline code */
 .reveal code {
   font-size: 1.2em !important;
 }
