@@ -26,9 +26,9 @@ format:
     width: 1280
     height: 720
     preview-links: true
-    chalkboard: true
     plugins: [search, zoom, chalkboard]
     code-line-numbers: true
+    embed-resources: true
     
 resources:
   - images/
