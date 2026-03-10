@@ -72,7 +72,8 @@ $presentation-title-slide-text-align: left;
 
 .theme-bg3 {
   &:is(.slide-background) {
-    background-image: url("/../../../../../images/theme/bg3.png");
+    background-image: url("images/theme/bg3.png");
+    background-color: #FFFFFF;
     @include background-half;
   }
   h2 {
@@ -121,7 +122,7 @@ h1 {
 
 .theme-bg2 {
   &:is(.slide-background) {
-    background-image: url("/../../../../../images/theme/bg2.png");
+    background-image: url("images/theme/bg2.png");
     background-color: $hutch-cyan;
     @include background-full;
   }
