@@ -30,6 +30,9 @@ format:
     plugins: [search, zoom, chalkboard]
     code-line-numbers: true
     
+resources:
+  - images/
+    
 title-slide-attributes:
   data-background-image: "images/theme/bg1.png"
   data-background-size: "auto 100%"
