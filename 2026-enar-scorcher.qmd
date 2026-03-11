@@ -511,15 +511,19 @@ Deep learning infrastructure improves fastest when:
 
 ::: {.column width="50%"}
 
-[NEED !! QR FOR THIS TALK!!!]{style="color:#cc0000;"}
+**These Slides:** 
 
-![](images/qr_github.png){width="75%" height="auto" fig-align="center"}
+[salernos.github.io/2026-enar-scorcher/](https://salernos.github.io/2026-enar-scorcher/)
+
+![](images/qr_slides.png){width="75%" height="auto" fig-align="center"}
 
 :::
 
 ::: {.column width="50%"}
 
-**Scorcher Repo:** [https://github.com/jtleek/scorcher](https://github.com/jtleek/scorcher)
+**Scorcher Repo:** 
+
+[github.com/jtleek/scorcher](https://github.com/jtleek/scorcher)
 
 ![](images/qr_github.png){width="75%" height="auto" fig-align="center"}
 
@@ -642,11 +646,11 @@ This requires:
 
 * 3,590 embeddings, 8.4% prevalence
 
-* AUPRC of 0.20 (2.4x baseline)
+* AUPRC: 0.152 (1.8x baseline)
 
-* Sensitivity of [XYZ]{style="color:#cc0000;"}
+* Sensitivity: 29.0%
 
-* Specificity of [XYZ]{style="color:#cc0000;"}
+* Specificity: 73.0%
 
 :::
 
@@ -660,11 +664,11 @@ This requires:
 
 * 2,925 records, 23.5% prevalence
 
-* AUPRC of 0.392 (1.7x baseline)
+* AUPRC: 0.392 (1.7x baseline)
 
-* Sensitivity of 88.5%
+* Sensitivity: 88.5%
 
-* Specificity of 20.9%
+* Specificity: 20.9%
 
 :::
 
