@@ -87,17 +87,6 @@ Biostatistics, University of Washington
 
 :::
 
-## Background: Survey of Institutional Data Needs {.theme-bg3}
-
-### 213 conversations, spanning 1,200 hours, from 319 individuals
-
-<br>
-
-![<span class="caption">Source: https://hutchdatascience.org/news/NeedsAssessmentv1/</span>](images/needs.PNG)
-
-::: {.absolute top="23%" left="43.5%" style="border: 5px solid #00C1D5; width: 475px; height: 70px; background: none;"}
-:::
-
 ## Critical need for better 'off-the-shelf' AI/ML research tools {.theme-bg3}
 
 ### Building AI/ML models requires significant expertise
