@@ -46,6 +46,8 @@ execute:
 
 ## First, Some Acknowledgements {.theme-bg3}
 
+### Funded by the Sloan Precision Oncology Technology Dissemination Award
+
 ::: {.people-row}
 
 ::: {.person}
@@ -72,7 +74,7 @@ Hematology-Oncology, UW Medicine
 
 ::: {.person}
 
-![](images/people/jeff.jpg){.headshot}
+![](images/people/jeff.jpeg){.headshot}
 
 **Jeff Leek, PhD**    
 *Vice President and Chief Data Officer*  
